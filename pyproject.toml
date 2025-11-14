@@ -14,3 +14,6 @@ dependencies = [
 [tool.uv]
 package = true
 
+[tool.setuptools.packages.find]
+include = ["core"]
+

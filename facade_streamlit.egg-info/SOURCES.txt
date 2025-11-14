@@ -1,0 +1,9 @@
+README.md
+pyproject.toml
+core/__init__.py
+core/analytics.py
+facade_streamlit.egg-info/PKG-INFO
+facade_streamlit.egg-info/SOURCES.txt
+facade_streamlit.egg-info/dependency_links.txt
+facade_streamlit.egg-info/requires.txt
+facade_streamlit.egg-info/top_level.txt

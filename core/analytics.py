@@ -163,10 +163,10 @@ def generate_unit_geometry(profile: DesignProfile) -> Dict:
     path_weights = (path_weights_raw / path_weights_raw.sum()).round(3).tolist()
 
     dynamic_coefficients = {
-        "curvatureInfluence": round(curvature_factor * 120, 2),
-        "tiltResponse": round(np.sin(tilt_factor) * 45, 2),
-        "mullionCoupling": round(profile.mullion_spacing / profile.module_width, 3),
-        "thicknessRatio": round(profile.panel_thickness / profile.module_depth, 3),
+        "曲率影响系数": round(curvature_factor * 120, 2),
+        "倾斜响应系数": round(np.sin(tilt_factor) * 45, 2),
+        "竖梃耦合系数": round(profile.mullion_spacing / profile.module_width, 3),
+        "厚度比": round(profile.panel_thickness / profile.module_depth, 3),
     }
 
     return {
@@ -193,7 +193,7 @@ def run_structural_verification(profile: DesignProfile, geometry: Dict) -> Dict:
     for idx, elevation in enumerate(nodes):
         gradient_factor = 1 + (idx / (len(nodes) - 1)) * 0.32
         generated = baseline_stress * gradient_factor * (
-            1 + geometry["dynamicCoefficients"]["curvatureInfluence"] / 400
+            1 + geometry["dynamicCoefficients"]["曲率影响系数"] / 400
         )
         optimized = generated * (0.92 - idx * 0.015)
         stress_records.append(
@@ -225,14 +225,14 @@ def compute_error_correction(profile: DesignProfile, geometry: Dict) -> Dict:
     """Estimate deviation corrections over iterative adjustments."""
 
     iterations = []
-    base_deviation = geometry["dynamicCoefficients"]["curvatureInfluence"] * 0.18
+    base_deviation = geometry["dynamicCoefficients"]["曲率影响系数"] * 0.18
     thermal_effect = profile.thermal_gradient * 0.014
     drift = base_deviation + thermal_effect
 
     for idx in range(5):
         reduction_factor = 0.72 - idx * 0.12
         deviation_mm = drift * reduction_factor
-        shape_offset = geometry["dynamicCoefficients"]["tiltResponse"] * reduction_factor
+        shape_offset = geometry["dynamicCoefficients"]["倾斜响应系数"] * reduction_factor
         path_reweight = geometry["pathWeights"][idx % len(geometry["pathWeights"])]
         iterations.append(
             {

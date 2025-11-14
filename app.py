@@ -10,7 +10,7 @@ import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 
-from facade.core import (
+from core import (
     DesignProfile,
     RULE_SET,
     analyze_parameter_integrity,
@@ -70,7 +70,11 @@ def profile_to_dataclass(payload: Dict) -> DesignProfile:
 def render_parameter_form(profiles: List[Dict]) -> Dict:
     """Render sidebar form for parameter manipulation."""
 
-    st.sidebar.header("参数集配置")
+    # st.sidebar.header("参数集配置")
+    st.sidebar.markdown(
+        '<h2 style="font-size:22px; margin-bottom: 0.5rem;">参数集配置</h2>',
+        unsafe_allow_html=True,
+    )
 
     profile_labels = [f"{item['id']} · {item['name']}" for item in profiles]
     active_index = next(
@@ -208,6 +212,7 @@ def render_geometry_section(geometry: Dict) -> None:
     col2.metric("包络体积 (m³)", geometry["envelopeVolume"])
     col3.metric("框架重量 (kN)", geometry["frameWeight"])
 
+    # 生成可视化饼图展示各指标权重
     donut = go.Figure(
         data=[
             go.Pie(
@@ -219,7 +224,7 @@ def render_geometry_section(geometry: Dict) -> None:
         ]
     )
     donut.update_layout(showlegend=False)
-
+    # 展示饼图
     st.plotly_chart(donut, use_container_width=True)
 
     st.markdown("**动态组合系数**")
@@ -227,6 +232,17 @@ def render_geometry_section(geometry: Dict) -> None:
     for column, (label, value) in zip(coeff_cols, geometry["dynamicCoefficients"].items()):
         column.metric(label.replace("_", " ").title(), value)
 
+    st.markdown(
+        """
+        <div style="font-size:0.8rem; line-height:1.5; color:#3a73c9;">
+            <p style="margin-bottom:0.6rem;">曲率影响系数：把立面曲率对力学响应的放大效应抽象成一个系数。曲率越大，面板受力越复杂，这个值越高。</p>
+            <p style="margin-bottom:0.6rem;">倾斜响应系数：倾角引起的附加响应强度。倾斜度越大，水平与竖向分力改变越明显，系数随之增大并带正负符号。</p>
+            <p style="margin-bottom:0.6rem;">竖梃耦合系数：竖梃间距与单元宽度之比，衡量竖梃之间的耦合/共享受力程度。数值越接近 1，说明竖梃间距接近单元宽度，耦合较强。</p>
+            <p style="margin-bottom:0.6rem;">厚度比：面板厚度与单元进深之比。它反映面板在剖面上的“薄/厚”程度，用来评估面板刚度与保温等性能的综合表现。</p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )    # 使用 unsafe_allow_html=True 允许 HTML 标签
 
 def render_structural_section(structural: Dict) -> None:
     st.subheader("结构验证与应力对比")
@@ -334,7 +350,7 @@ def render_history() -> None:
 
 def main() -> None:
     st.set_page_config(page_title="幕墙单元件生成验证 · Streamlit 控制台", layout="wide")
-    st.title("幕墙单元件快速生成验证系统 · Streamlit 版")
+    st.title("幕墙单元件快速生成验证系统")
     st.caption("参数管理、生成逻辑、结构验证、误差修正与数据关联五大模块一次性交付。")
 
     dataset = load_dataset()
