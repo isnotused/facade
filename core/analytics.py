@@ -127,9 +127,9 @@ def analyze_parameter_integrity(profile: DesignProfile) -> Dict:
         "normalizedIndicators": normalized_gaps,
         "missingParameters": missing,
         "notes": (
-            "Parameter coverage satisfactory; proceed to geometry synthesis"
+            "参数覆盖完整，建议进入几何生成阶段"
             if completeness > 90 and rule_match > 72
-            else "Review highlighted inputs to strengthen rule alignment"
+            else "请检查高亮显示的参数，以加强规则匹配度"
         ),
     }
 
@@ -256,7 +256,7 @@ def compute_error_correction(profile: DesignProfile, geometry: Dict) -> Dict:
 def build_data_association(profile: DesignProfile, corrections: Dict) -> Dict:
     """Construct design-to-field association dataset."""
 
-    timeline = ["Concept", "Design Freeze", "Mockup", "Fabrication", "Installation"]
+    timeline = ["概念设计", "设计冻结", "样板阶段", "加工制作", "安装施工"]
     base = 0.68 + corrections["assemblySuitability"] / 250
 
     correlation_values = []
