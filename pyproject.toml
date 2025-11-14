@@ -1,0 +1,16 @@
+[project]
+name = "facade-streamlit"
+version = "0.1.0"
+description = "Streamlit console mirroring the curtain wall unit verification workflow."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "streamlit>=1.35",
+    "pandas>=2.2",
+    "numpy>=1.26",
+    "plotly>=5.22",
+]
+
+[tool.uv]
+package = true
+
